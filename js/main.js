@@ -68,9 +68,15 @@
     function setLayout() {
         // 각 스크롤 섹션의 높이 세팅
         for(let i =0;i<sceneInfo.length;i++){
-            sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
+            if(sceneInfo[i].type === 'sticky'){
+                sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
+            } else if (sceneInfo[i].type === 'normal'){
+                sceneInfo[i].scrollHeight = sceneInfo[i].objs.container.offsetHeight;
+            }
             sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
         }
+
+        yOffset = window.pageYOffset;
         // 새로고침해도 헤당 위치에 설정
        let totalScrollHeight = 0;
        for(let i=0;i<sceneInfo.length; i++) {
@@ -127,11 +133,12 @@
 
                 if(scrollRatio <= 0.22) {
                     // in
-                    objs.messageA.style.opacity = messageA_opacity_in;
+                    objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
                     objs.messageA.style.transform = `translateY(${messageA_translateY_in}%)`;
                 } else {
                     // out
-                    objs.messageA.style.opacity = `translateY(${messageA_translateY_out}%)`;
+                    objs.messageA.style.opacity = calcValues(values.messageA_opacity_out, currentYOffset);
+                    objs.messageA.style.transform = `translateY(${messageA_translateY_out}%)`;
                 }   
                 break;
 
